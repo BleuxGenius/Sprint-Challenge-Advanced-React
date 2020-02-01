@@ -1,52 +1,46 @@
-import React from "react";
-import Header from "./components/Header";
-import PlayerList from "./components/SearchForm";
-import SearchForm from "./components/SearchForm";
-import "./App.css";
-import Axios from "axios";
+import React, { Component }from 'react';
+import axios from 'axios';
+import './App.css';
+import Navbar from './components/Navbar';
 
-
-
-class App extends React.Component {
-  constructor() {
-    super();
+class App extends Component {
+  constructor (){
+    super()
     this.state = {
-      data: [],
-      name: "",
-      country: ""
-    };
+      Players: []
+
+
+    }
   }
 
-  componentDidMount() {
-    console.log("Component did mount!");
+  componentDidMount(){
+    axios.get('http://localhost:5000/api/players').then(response =>{
+      
 
-    Axios.get("http://localhost:5000/api/players")
-      .then(response => {
-        console.log(response.data);
-        this.setState({
-          data: response.data,
-          name: response.data.name,
-          country: response.data.country
-        });
+      this.setState ({
+
+        Players:response.data
       })
-      .catch(error => console.log("No soccer players for you"));
+    })
   }
-  render() {
-    return (
-      <div className="App">
-        <Header />
-        <SearchForm
-          data={this.state.data}
-          name={this.state.name}
-          country={this.state.country}
-        />
-        <PlayerList
-          data={this.state.data}
-          name={this.state.name}
-          country={this.state.country}
-        />
+
+  render(){
+    return(
+      <div className='Container'>
+        <Navbar/>
+
+        {this.state.Players.map(player => {
+          return(
+            <div className='playercard'>
+
+              <p>{player.name}</p>
+              <p>{player.country}</p>
+              <p>{player.searches}</p>
+            </div>
+          )
+        })}
       </div>
-    );
+    )
   }
 }
 
